@@ -3,7 +3,10 @@
     <h1>Here are some robots:</h1>
     <div class="robots-container">
       <div v-for="robohash in this.robohashes" :key="robohash" class="robot-container">
-        <robot-selection-card :robohash="robohash"/>
+        <robot-selection-card 
+          v-on:selected_friendly="selectFriendly(robohash)" 
+          v-on:selected_foe="selectFoe(robohash)" 
+          :robohash="robohash"/>
       </div>
     </div>
   </div>
@@ -18,7 +21,17 @@ export default {
   },
   data() {
     return {
-      robohashes: []
+      robohashes: [],
+      foeHashes: [],
+      friendlyHashes: [],
+    }
+  },
+  methods: {
+    selectFriendly(robohash) {
+      this.friendlyHashes.push(robohash)
+    },
+    selectFoe(robohash) {
+      this.foeHashes.push(robohash)
     }
   },
   mounted() {
@@ -31,7 +44,7 @@ export default {
 
 <style scoped>
 #landing-page-container {
-  background: #fe8a71;
+  background: #fe9c8f;
 }
 
 .robots-container {
