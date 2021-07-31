@@ -1,9 +1,10 @@
 <template>
   <div class="robot-card">
+    <div v-if="controls" class="card-buttons">
+      <button v-on:click="selectedFriendly()">Friendly</button>
+      <button v-on:click="selectedFoe()">Foe</button>
+    </div>
     <img :src="this.robourl"/>
-    <button v-on:click="selectedFriendly()">Friendly</button>
-    <button v-on:click="selectedFoe()">Foe</button>
-    <p>{{robohash}}</p>
   </div>
 </template>
 
@@ -23,7 +24,7 @@ export default {
       this.$emit('selected_foe')
     }
   },
-  props: ['robohash'],
+  props: ['robohash', 'controls'],
   mounted() {
     this.robourl = 'https://robohash.org/' + this.robohash;
   }
@@ -37,5 +38,11 @@ export default {
   background: #fec8c1;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   border-radius: 5px;
+}
+
+.card-buttons {
+  padding-top: 0.25rem;
+  display: flex;
+  justify-content: space-evenly;
 }
 </style>
