@@ -48,6 +48,13 @@
             :controls="false"/>
         </div>
       </div>
+      <div class="test-result" v-show="tabIndex == 5">
+        <button v-on:click="reset">Reset Training Data</button>
+        <div class="mobilenet-knn">
+          <button v-on:click="trainModel_MobileNet_KNN">Train Using Mobilenet + KNN</button>
+          <button v-on:click="testModel_MobileNet_KNN">Test Using Mobilenet + KNN</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -97,6 +104,10 @@ export default {
       // Given an array of <img> elements and an array of corresponding labels,
       // train a KNN model using the internal representation of MobileNet as the
       // feature vector.
+
+      // NOTE: This model seems to be sensitive towards distinguishing
+      // cylindral-shaped head robots against round-edged triangular-shaped head
+      // robots.
 
       const friendlyHashes = this.selectedFriendlyHashes
       const foeHashes = this.selectedFoeHashes
