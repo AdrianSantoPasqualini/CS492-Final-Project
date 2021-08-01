@@ -1,6 +1,6 @@
 <template>
   <div class="robot-card">
-    <img :src="this.robourl"/>
+    <img crossorigin="" :src="this.robourl" :id="this.robohash"/>
     <button v-on:click="selectedFriendly()">Friendly</button>
     <button v-on:click="selectedFoe()">Foe</button>
     <p>{{robohash}}</p>
