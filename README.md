@@ -1,28 +1,20 @@
-# cs492-final-project
+## What topics we are trying to address:
+Currently, most AI models fall into two categories based on how they are built - unsupervised learning, and supervised learning. For unsupervised learning models, the model designers do not encode prior knowledge about a distribution, and the models are expected to learn about the hidden pattern and structure of this distribution given a dataset drawn from it. On the other hand, for supervised learning, the designers have a clear set of categories (labels) beforehand, and the AI models are expected to be able to categorize new items into these predefined categories (labels) by learning from a dataset (training set) with its data points already categorized.
 
-## Project setup
-```
-npm install
-```
+In many military use cases of AI, one typical feature of these AI systems is the ability to identify targets, such as individuals, as friends or enemies. Such models underlying these AI systems would often be supervised learning models, and the corresponding labels are "friends" or "enemies". There is a major issue with supervised learning models. Typically, the training sets are so limited that the majority of the items being classified by a supervised learning model will not even be in these training sets at all. This means that the supervised learning AI models are expected to learn the features of items corresponding to each label so that it may extrapolate and classify new items, hopefully, with high accuracy. Also, the behavior of AI models are often sensitive to the training data set. The complex nature of most AI systems, compounding with the process of extrapolation and its sensitivity to the training dataset, can lead to these AI models making unexpected classification results. In a future in which lethal autonomous weapons are widely deployed and human lives are involved, such unexpectedness may have devastating consequences.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Description of project:
+Our group developed a mini web-game to illustrate and warn about such consequences. In our game, the player is going to try to create an AI that distinguishes friendly robots from enemies. The game presents the player a set of images of friendly robots and a set of images of enemy robots. The game also gives the player a large set of images of robots from which the player can choose and build the training dataset for the AI. The tricky part of this game is that the user needs to identify the, sometimes minor, differences in features between the friendly and enemy sets and try to encode those differences in their training sets. Our game is presenting a scenario much simpler than those in reality. In the real world, the entire set of objects going to be classified are almost never given beforehand, while the objects going to be classified in our game are given in advance, allowing the user to more easily design their training data. Despite such simplification, the player will find it to be challenging to perfectly classify all of the robots to be tested correctly. As the AI system in the setting of our game is lethal, any false positives flagging friendly robots as hostiles will have severe consequences of actually killing an innocent robot. 
 
-### Lints and fixes files
-```
-npm run lint
-```
+## How to use:
+The website is hosted at ​​https://robot-wars.netlify.app/.
+Use the tabs on the left to navigate around the site.
+Read the overview page to start (1st tab, there is some overlap with this writeup in the first half).
+Look at the examples for friends and enemies (2nd and 3rd tabs). 
+Collect some training data (from the 4th tab) which is representative of the friend and enemies examples by selecting the label on each robot. You can also refresh at the top right to view more data.
+View and edit your training sets if you like (5th and 6th tabs).
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Finally, train the classification model using your training data and see the classification accuracy you get on the example sets (7th tab). You have a choice between two models/algorithms, logistic regression and transfer learning on a MobileNet neural network model. If your accuracy is low, look to see what examples you are failing on and collect more training data to help classify them correctly.
 
-===== Initial Pitch =====
 
-We wish to develop a game that demonstrates how easily an AI could achieve unexpected outcomes if the training data is not chosen carefully. These unexpected outcomes might be disastrous in cases where lives are on the line. This game lets users train a lethal autonomous weapons system. They would choose samples from a dataset (possibly representing an alien/robot city https://robohash.org/) that would go into the training/testing sets for the AI model. They could then watch how their model performs (how many civilians it destroys, how many enemies it lets in, etc) and potentially iterate on the model datasets and parameters.
