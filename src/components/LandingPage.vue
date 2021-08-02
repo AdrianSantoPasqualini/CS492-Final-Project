@@ -20,6 +20,8 @@
         <p>Use the tabs to the left to navigate around the site. You are given two example sets of robots, one representing a friendly population and one representing an enemy population. You should be able to see some broader differences between the two sets, as well as some features that have some minor overlap. You must collect training data (from the 4th tab) by selecting robots you see as being a part of the friendly population or the enemy population (or neither).</p>
         <p>Your selections will be used (in the bottom tab) to train a classification model which will be tested on the example sets you were given. You can change your training sets as many times as you like to try and increase your accuracy.</p>
         <p>As a final note, think about if you would be comfortable deploying a lethally autonomous weapon system that had the classification accuracy rate that you were able to achieve, and think about if you would be comfortable living in a place where the autonomous weapon system was deployed, even if you should be classified as friendly.</p>
+        
+        <p>All the robot art we used are lovingly delivered by <a  target="_blank" href="https://robohash.org/">Robohash.org</a>.</p>
       </div>
       <div class="robots-container" v-show="tabIndex == 0">
         <h1>Here are some samples from the friendly city to base your training data on:</h1>
