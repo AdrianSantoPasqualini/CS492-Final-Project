@@ -106,7 +106,7 @@ export default {
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
-  padding: 0.5rem;
+  padding-left: 2rem;
 }
 
 .test-results {

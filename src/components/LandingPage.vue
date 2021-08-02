@@ -76,17 +76,24 @@
           </div>
         </div>
       </div>
+      <testing-page
+        v-show="tabIndex == 5"
+        :foeHashes="selectedFoeHashes"
+        :friendlyHashes="selectedFriendlyHashes"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import RobotSelectionCard from './RobotSelectionCard.vue';
+import TestingPage from './TestingPage.vue';
 import ExampleCities from './cities.js';
 export default {
   name: 'LandingPage',
   components: {
-    RobotSelectionCard
+    RobotSelectionCard,
+    TestingPage
   },
   data() {
     return {
@@ -186,7 +193,7 @@ export default {
 }
 
 .main-content {
-  width: 95%;
+  width: 100%;
 }
 
 </style>
