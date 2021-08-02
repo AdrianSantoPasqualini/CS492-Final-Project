@@ -2,13 +2,14 @@
   <div class="robot-card">
     <div v-if="controls" class="card-buttons">
       <button v-bind:class="{ selected: friendlySelected }" v-on:click="selectedFriendly()">Friendly</button>
-      <button v-bind:class="{ selected: foeSelected }" v-on:click="selectedFoe()">Foe</button>
+      <button v-bind:class="{ selected: foeSelected }" v-on:click="selectedFoe()">Enemy</button>
     </div>
     <div v-if="removeButton" class="remove-button">
       <button v-if="friendlySelected" v-on:click="selectedFriendly()">Remove</button>
       <button v-if="foeSelected" v-on:click="selectedFoe()">Remove</button>
     </div>
-    <img :src="this.robourl"/>
+    <img crossorigin="" :src="this.robourl" :id="this.robohash"/>
+    <p>{{robohash}}</p>
   </div>
 </template>
 

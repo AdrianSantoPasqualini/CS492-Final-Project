@@ -117,7 +117,7 @@ export default {
       if (!this.selectedFoeHashes.includes(robohash)) {
         this.selectedFoeHashes.push(robohash)
       } else {
-        this.selectedFoeHashes = this.selectedFriendlyHashes.filter(hash => hash !== robohash)
+        this.selectedFoeHashes = this.selectedFoeHashes.filter(hash => hash !== robohash)
       }
     },
     refresh() {
