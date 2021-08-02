@@ -48,6 +48,11 @@
             :controls="false"/>
         </div>
       </div>
+      <testing-page
+        v-show="tabIndex == 5"
+        :foeHashes="selectedFoeHashes"
+        :friendlyHashes="selectedFriendlyHashes"
+      />
     </div>
   </div>
 </template>
@@ -55,10 +60,12 @@
 <script>
 import RobotSelectionCard from './RobotSelectionCard.vue';
 import ExampleCities from './cities.js';
+import TestingPage from './TestingPage.vue';
 export default {
   name: 'LandingPage',
   components: {
-    RobotSelectionCard
+    RobotSelectionCard,
+    TestingPage,
   },
   data() {
     return {
@@ -81,6 +88,7 @@ export default {
   mounted() {
     this.exampleFoeHashes = ExampleCities.foe;
     this.exampleFriendlyHashes = ExampleCities.friendly;
+
     for (let i = 0; i < 500; i++) {
       this.robohashes.push(Math.random());
     }
@@ -101,7 +109,7 @@ export default {
 }
 
 .sidebar-spacer {
-  width: 5%;
+  width: 10%;
 }
 
 .sidebar {
@@ -127,7 +135,7 @@ export default {
 }
 
 .main-content {
-  width: 95%;
+  width: 90%;
 }
 
 </style>
