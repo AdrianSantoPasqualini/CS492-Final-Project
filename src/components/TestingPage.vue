@@ -7,6 +7,7 @@
       <h4>If your accuracy is low, try getting more training data or being more selevtive with your training data to see if you can improve it.</h4>
     </div>
     <button v-on:click="train()">Test</button>
+    <p v-if="showWarning">You must select some training data before testing.</p>
     <div v-if="doneTesting" class="test-results">
       <h2>The model predicted {{ testAccuracy }}% of the robots correctly.</h2>
       <h4>See below for more detailed results. A green background means that the robot was correctly classified and a red background means it was incorrectly classified.</h4>
@@ -49,10 +50,16 @@ export default {
       friendlyPredictions: [],
       foePredictions: [],
       doneTesting: false,
+      showWarning: false,
     }
   },
   methods: {
     async train() {
+      if (this.friendlyHashes.length ==  0 || this.foeHashes.length == 0) {
+        this.showWarning = true
+        return
+      }
+
       // Prepare training data
       const { xs, ys } = await prepareData({
         friendlyHashes: this.friendlyHashes,
