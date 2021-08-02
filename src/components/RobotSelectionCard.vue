@@ -9,7 +9,6 @@
       <button v-if="foeSelected" v-on:click="selectedFoe()">Remove</button>
     </div>
     <img crossorigin="" :src="this.robourl" :id="this.robohash"/>
-    <p>{{robohash}}</p>
   </div>
 </template>
 

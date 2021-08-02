@@ -1,12 +1,12 @@
 <template>
   <div id='landing-page-container'>
     <div class="sidebar">
-      <button v-bind:class="{ selected: tabIndex == 0 }" v-on:click="tabIndex = 0">Friendly Example</button>
-      <button v-bind:class="{ selected: tabIndex == 1 }" v-on:click="tabIndex = 1">Enemy Example</button>
-      <button v-bind:class="{ selected: tabIndex == 2 }" v-on:click="tabIndex = 2">Get Training Data</button>
-      <button v-bind:class="{ selected: tabIndex == 3 }" v-on:click="tabIndex = 3">Friendly Training Data</button>
-      <button v-bind:class="{ selected: tabIndex == 4 }" v-on:click="tabIndex = 4">Enemy Training Data</button>
-      <button v-bind:class="{ selected: tabIndex == 5 }" v-on:click="tabIndex = 5">Test</button>
+      <button v-bind:class="{ selected: tabIndex == 0 }" v-on:click="changeTab(0)">Friendly Example</button>
+      <button v-bind:class="{ selected: tabIndex == 1 }" v-on:click="changeTab(1)">Enemy Example</button>
+      <button v-bind:class="{ selected: tabIndex == 2 }" v-on:click="changeTab(2)">Get Training Data</button>
+      <button v-bind:class="{ selected: tabIndex == 3 }" v-on:click="changeTab(3)">Friendly Training Data</button>
+      <button v-bind:class="{ selected: tabIndex == 4 }" v-on:click="changeTab(4)">Enemy Training Data</button>
+      <button v-bind:class="{ selected: tabIndex == 5 }" v-on:click="changeTab(5)">Test</button>
     </div>
     <div class="sidebar-spacer">
     </div>
@@ -106,12 +106,17 @@ export default {
     }
   },
   methods: {
+    changeTab(tabIndex) {
+      this.tabIndex = tabIndex;
+      localStorage.setItem('tabIndex', tabIndex);
+    },
     selectFriendly(robohash) {
       if (!this.selectedFriendlyHashes.includes(robohash)) {
         this.selectedFriendlyHashes.push(robohash)
       } else {
         this.selectedFriendlyHashes = this.selectedFriendlyHashes.filter(hash => hash !== robohash)
       }
+      localStorage.setItem('selectedFriendlyHashes', this.selectedFriendlyHashes);
     },
     selectFoe(robohash) {
       if (!this.selectedFoeHashes.includes(robohash)) {
@@ -119,6 +124,7 @@ export default {
       } else {
         this.selectedFoeHashes = this.selectedFoeHashes.filter(hash => hash !== robohash)
       }
+      localStorage.setItem('selectedFoeHashes', this.selectedFoeHashes);
     },
     refresh() {
       for (let i = 0; i < 50; i++) {
@@ -135,6 +141,9 @@ export default {
     for (let i = 0; i < 50; i++) {
       this.robohashes.push(Math.random());
     }
+    this.selectedFriendlyHashes = localStorage.getItem('selectedFriendlyHashes').split(',')
+    this.selectedFoeHashes = localStorage.getItem('selectedFoeHashes').split(',')
+    this.tabIndex = parseInt(localStorage.getItem('tabIndex'));
   }
 }
 </script>
