@@ -1,27 +1,26 @@
 <template>
-  <div>
-    <button v-on:click="train()">Train!</button>
-    <p v-for="(epoch, epochNum) in this.epochs" :key="epoch">
-      [Epoch {{ epochNum }}] Loss: {{ epoch.loss }}, Accuracy: {{ epoch.accuracy }}
-    </p>
-    <h1>Friendlies</h1>
-    <h3>Labelled</h3>
-    <img v-for="robohash in this.friendlyHashes" :key="robohash" :src="`https://robohash.org/${robohash}?size=100x100`" />
-    <h3>Predictions</h3>
-    <div class="prediction-results">
-      <div v-for="robot in this.newFriendlies" :key="robot.robohash">
-        <img :src="`https://robohash.org/${robot.robohash}?size=100x100`" />
-        <p>Score: {{ robot.y.toFixed(5) }}</p>
-      </div>
+  <div class="test-page-container">
+    <div>
+      <h1>Test How Your Training Sets Perform</h1>
+      <h4>Choose an algorithm from below to run the classification with. When you press the Test button, the classification model will be trained using the datasets you have created.</h4>
+      <h4>Once training is complete, the trained model will be used to predict each entry in the example datasets so you can see how your model performed.</h4>
+      <h4>If your accuracy is low, try getting more training data or being more selevtive with your training data to see if you can improve it.</h4>
     </div>
-    <h1>Foes</h1>
-    <h3>Labelled</h3>
-    <img v-for="robohash in this.foeHashes" :key="robohash" :src="`https://robohash.org/${robohash}?size=100x100`" />
-    <h3>Predictions</h3>
-    <div class="prediction-results">
-      <div v-for="robot in this.newFoes" :key="robot.robohash">
-        <img :src="`https://robohash.org/${robot.robohash}?size=100x100`" />
-        <p>Score: {{ robot.y.toFixed(5) }}</p>
+    <button v-on:click="train()">Test</button>
+    <div v-if="doneTesting" class="test-results">
+      <h2>The model predicted {{ testAccuracy }}% of the robots correctly.</h2>
+      <h4>See below for more detailed results. A green background means that the robot was correctly classified and a red background means it was incorrectly classified.</h4>
+      <h2>Results for Friendly City:</h2>
+      <div class="prediction-results">
+        <div v-for="(friendlyHash, i) in ExampleCities.friendly" :key="friendlyHash">
+          <img v-bind:class="{ predictionResult: true, predCorrect: friendlyPredictions[i] == 1, predIncorrect: friendlyPredictions[i] != 1 }" :src="`https://robohash.org/${friendlyHash}?size=100x100`" />
+        </div>
+      </div>
+      <h2>Results for Enemy City:</h2>
+      <div class="prediction-results">
+        <div v-for="(foeHash, i) in ExampleCities.foe" :key="foeHash">
+          <img v-bind:class="{ predictionResult: true, predCorrect: foePredictions[i] == 0, predIncorrect: foePredictions[i] != 0 }" :src="`https://robohash.org/${foeHash}?size=100x100`" />
+        </div>
       </div>
     </div>
   </div>
@@ -32,14 +31,12 @@ import * as tf from '@tensorflow/tfjs'
 import {
   logisticRegressionClassifier,
   prepareData,
-  robohashToTensor,
-  predictLogRes,
-  robohashesToBatchTensor,
   imgSize,
   numChannels
 } from '../logisticRegression.js'
-console.log(robohashToTensor)
-console.log(tf)
+
+import ExampleCities from './cities.js';
+
 export default {
   name: 'TestingPage',
   data() {
@@ -47,22 +44,28 @@ export default {
       newFriendlies: [],
       newFoes: [],
       epochs: [],
+      testAccuracy: 0,
+      ExampleCities: ExampleCities,
+      friendlyPredictions: [],
+      foePredictions: [],
+      doneTesting: false,
     }
   },
   methods: {
     async train() {
+      // Prepare training data
       const { xs, ys } = await prepareData({
         friendlyHashes: this.friendlyHashes,
         foeHashes: this.foeHashes,
       })
 
+      // Load and train logistic regression model
       let logRes = logisticRegressionClassifier([imgSize*imgSize*numChannels])
       logRes.compile({
         optimizer: tf.train.adam(),
         loss: 'binaryCrossentropy',
         metrics: ['binaryAccuracy'],
       })
-
       await logRes.fit(xs, ys, {
         epochs: 20,
         callbacks:  {
@@ -75,29 +78,56 @@ export default {
         },
       })
 
-      const ypred = logRes.predict(xs)
-      console.log('labels', await ys.reshape([-1]).array())
-      console.log('raw predictions', await ypred.reshape([-1]).array())
-      console.log('predictions', await ypred.round().reshape([-1]).array())
-      console.log('loss', await tf.metrics.binaryCrossentropy(ys, ypred).array())
-      console.log('accuracy', await tf.metrics.binaryAccuracy(ys, ypred).array())
+      // Prepare testing data
+      const { xs: xTest, ys: yTest } = await prepareData({
+        friendlyHashes: ExampleCities.friendly,
+        foeHashes: ExampleCities.foe,
+      })
 
-      const newHashes = Array(100).fill().map(_ => Math.random())
-      const newXs = await robohashesToBatchTensor(newHashes)
-      const newYpred = await logRes.predict(newXs).flatten().array()
-      const newRobots = newHashes.map((robohash, i) => ({ robohash, y: newYpred[i] }))
-      this.newFriendlies = newRobots.filter(robot => robot.y > .5).sort((robotA, robotB) => robotA.y - robotB.y)
-      this.newFoes = newRobots.filter(robot => robot.y <= .5).sort((robotA, robotB) => robotA.y - robotB.y)
+      // Test and save results
+      const ypred = logRes.predict(xTest)
+      let testAccuracy = await tf.metrics.binaryAccuracy(yTest, ypred).array()
+      let predictions = await ypred.round().reshape([-1]).array()
+      this.friendlyPredictions = predictions.splice(0, ExampleCities.friendly.length)
+      this.foePredictions = predictions
+      this.testAccuracy = (testAccuracy.reduce((a, b) => a + b, 0) / testAccuracy.length * 100).toFixed(2)
+
+      this.doneTesting = true;
     },
   },
   props: ['foeHashes', 'friendlyHashes'],
-  mounted() {
-    console.log(this.foeHashes)
-  }
 }
 </script>
 
 <style scoped>
+.test-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 0.5rem;
+}
+
+.test-results {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.predictionResult {
+  margin: 0.5rem;
+  border-radius: 5px;
+}
+
+.predCorrect {
+  background: rgb(100, 255, 100);
+}
+
+.predIncorrect {
+  background: rgb(255, 0, 0);
+}
+
 .prediction-results {
   display: flex;
   flex-wrap: wrap;

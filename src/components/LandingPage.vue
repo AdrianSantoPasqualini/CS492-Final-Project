@@ -89,10 +89,6 @@ export default {
     this.exampleFoeHashes = ExampleCities.foe;
     this.exampleFriendlyHashes = ExampleCities.friendly;
 
-    // TODO: Don't use this
-    this.selectedFoeHashes = ExampleCities.foe;
-    this.selectedFriendlyHashes = ExampleCities.friendly;
-
     for (let i = 0; i < 500; i++) {
       this.robohashes.push(Math.random());
     }
@@ -113,7 +109,7 @@ export default {
 }
 
 .sidebar-spacer {
-  width: 5%;
+  width: 10%;
 }
 
 .sidebar {
@@ -139,7 +135,7 @@ export default {
 }
 
 .main-content {
-  width: 95%;
+  width: 90%;
 }
 
 </style>
