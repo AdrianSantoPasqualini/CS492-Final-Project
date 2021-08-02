@@ -39,40 +39,43 @@
             v-on:selected_friendly="selectFriendly(robohash)"
             v-on:selected_foe="selectFoe(robohash)"
             :robohash="robohash"
+            :friendlySelected="selectedFriendlyHashes.includes(robohash)"
+            :foeSelected="selectedFoeHashes.includes(robohash)"
             :controls="true"/>
         </div>
       </div>
-      <div class="robots-container" v-show="tabIndex == 3">
-        <div>
+      <div class="robots-container" style="flex-direction: column" v-show="tabIndex == 3">
+        <div class="top-container" style="flex-direction: column">
           <h1>View and edit the training data for your friendly city:</h1>
-          <div v-if="this.selectedFriendlyHashes.length > 0">
-            <div v-for="robohash in this.selectedFriendlyHashes" :key="robohash" class="robot-container">
-              <robot-selection-card
-                :robohash="robohash"
-                :controls="false"/>
-            </div>
+          <h2 v-if="this.selectedFriendlyHashes.length == 0">You have not selected any data yet.</h2>
+        </div>
+        <div class="robots-container" v-if="this.selectedFriendlyHashes.length > 0">
+          <div v-for="robohash in this.selectedFriendlyHashes" :key="robohash" class="robot-container">
+            <robot-selection-card
+              :robohash="robohash"
+              v-on:selected_friendly="selectFriendly(robohash)"
+              :controls="false"
+              :removeButton="true"
+              :friendlySelected="true"/>
           </div>
-          <h2 v-else>You have not selected any data yet.</h2>
         </div>
       </div>
-      <div class="robots-container" v-show="tabIndex == 4">
-        <div>
+      <div class="robots-container" style="flex-direction: column" v-show="tabIndex == 4">
+        <div class="top-container" style="flex-direction: column">
           <h1>View and edit the training data for your enemy city:</h1>
-          <div v-if="this.selectedFoeHashes.length > 0">
-            <div v-for="robohash in this.selectedFoeHashes" :key="robohash" class="robot-container">
-              <robot-selection-card
-                :robohash="robohash"
-                :controls="false"/>
-            </div>
+          <h2 v-if="this.selectedFoeHashes.length == 0">You have not selected any data yet.</h2>
+        </div>
+        <div class="robots-container" v-if="this.selectedFoeHashes.length > 0">
+          <div v-for="robohash in this.selectedFoeHashes" :key="robohash" class="robot-container">
+            <robot-selection-card
+              :robohash="robohash"
+              v-on:selected_foe="selectFoe(robohash)"
+              :controls="false"
+              :removeButton="true"
+              :foeSelected="true"/>
           </div>
-          <h2 v-else>You have not selected any data yet.</h2>
         </div>
       </div>
-      <testing-page
-        v-show="tabIndex == 5"
-        :foeHashes="selectedFoeHashes"
-        :friendlyHashes="selectedFriendlyHashes"
-      />
     </div>
   </div>
 </template>
@@ -80,12 +83,10 @@
 <script>
 import RobotSelectionCard from './RobotSelectionCard.vue';
 import ExampleCities from './cities.js';
-import TestingPage from './TestingPage.vue';
 export default {
   name: 'LandingPage',
   components: {
-    RobotSelectionCard,
-    TestingPage,
+    RobotSelectionCard
   },
   data() {
     return {
@@ -99,10 +100,18 @@ export default {
   },
   methods: {
     selectFriendly(robohash) {
-      this.selectedFriendlyHashes.push(robohash)
+      if (!this.selectedFriendlyHashes.includes(robohash)) {
+        this.selectedFriendlyHashes.push(robohash)
+      } else {
+        this.selectedFriendlyHashes = this.selectedFriendlyHashes.filter(hash => hash !== robohash)
+      }
     },
     selectFoe(robohash) {
-      this.selectedFoeHashes.push(robohash)
+      if (!this.selectedFoeHashes.includes(robohash)) {
+        this.selectedFoeHashes.push(robohash)
+      } else {
+        this.selectedFoeHashes = this.selectedFriendlyHashes.filter(hash => hash !== robohash)
+      }
     },
     refresh() {
       for (let i = 0; i < 50; i++) {
@@ -136,7 +145,7 @@ export default {
 }
 
 .sidebar-spacer {
-  width: 10%;
+  width: 5%;
 }
 
 .sidebar {
@@ -177,7 +186,7 @@ export default {
 }
 
 .main-content {
-  width: 90%;
+  width: 95%;
 }
 
 </style>

@@ -1,8 +1,12 @@
 <template>
   <div class="robot-card">
     <div v-if="controls" class="card-buttons">
-      <button v-on:click="selectedFriendly()">Friendly</button>
-      <button v-on:click="selectedFoe()">Foe</button>
+      <button v-bind:class="{ selected: friendlySelected }" v-on:click="selectedFriendly()">Friendly</button>
+      <button v-bind:class="{ selected: foeSelected }" v-on:click="selectedFoe()">Foe</button>
+    </div>
+    <div v-if="removeButton" class="remove-button">
+      <button v-if="friendlySelected" v-on:click="selectedFriendly()">Remove</button>
+      <button v-if="foeSelected" v-on:click="selectedFoe()">Remove</button>
     </div>
     <img :src="this.robourl"/>
   </div>
@@ -24,7 +28,7 @@ export default {
       this.$emit('selected_foe')
     }
   },
-  props: ['robohash', 'controls'],
+  props: ['robohash', 'controls', 'friendlySelected', 'foeSelected', 'removeButton'],
   mounted() {
     this.robourl = 'https://robohash.org/' + this.robohash;
   }
@@ -44,5 +48,15 @@ export default {
   padding-top: 0.25rem;
   display: flex;
   justify-content: space-evenly;
+}
+
+.remove-button {
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  text-align: left;
+}
+
+.selected {
+  background: #fd988b;
 }
 </style>
